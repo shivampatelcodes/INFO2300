@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import SignUp from "./pages/Register";
 import SignIn from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -33,9 +38,9 @@ const App = () => {
         <Route
           path="/driver-dashboard"
           element={
-            // <PrivateRoute>
+            <PrivateRoute>
               <DriverDashboard />
-            // </PrivateRoute>
+            </PrivateRoute>
           }
         />
         <Route
