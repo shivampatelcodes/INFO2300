@@ -41,16 +41,27 @@ const ManageBookingsPage = () => {
       }
     };
 
-    const fetchBookings = () => {
+    const fetchBookingsWithRideDates = () => {
       const q = query(
         collection(db, "bookings"),
         where("driverId", "==", auth.currentUser.uid)
       );
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const bookingsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+      const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+        // Create an array of booking objects with ride date attached
+        const bookingsData = await Promise.all(
+          querySnapshot.docs.map(async (docSnap) => {
+            const booking = { id: docSnap.id, ...docSnap.data() };
+            // If date is not stored in booking, fetch it from rides collection
+            if (!booking.date && booking.rideId) {
+              const rideRef = doc(db, "rides", booking.rideId);
+              const rideDoc = await getDoc(rideRef);
+              if (rideDoc.exists()) {
+                booking.date = rideDoc.data().date;
+              }
+            }
+            return booking;
+          })
+        );
         setBookings(bookingsData);
         setLoading(false);
       });
@@ -59,7 +70,7 @@ const ManageBookingsPage = () => {
     };
 
     fetchUserRole();
-    const unsubscribe = fetchBookings();
+    const unsubscribe = fetchBookingsWithRideDates();
 
     return () => unsubscribe();
   }, []);
@@ -97,7 +108,12 @@ const ManageBookingsPage = () => {
 
   const filteredBookings = filterDate
     ? bookings.filter((booking) => {
-        const bookingDate = booking.date.toDate().toISOString().split("T")[0];
+        // Parse the attached date field from rides collection
+        const bookingDate = booking.date?.toDate
+          ? booking.date.toDate().toISOString().split("T")[0]
+          : booking.date && booking.date.seconds
+          ? new Date(booking.date.seconds * 1000).toISOString().split("T")[0]
+          : "";
         return bookingDate === filterDate;
       })
     : bookings;
@@ -149,11 +165,29 @@ const ManageBookingsPage = () => {
                     </p>
                     <p>
                       <strong>Date:</strong>{" "}
-                      {booking.date
-                        ? new Date(
+                      {(() => {
+                        // If booking.date is a Firestore Timestamp with a toDate() method
+                        if (
+                          booking.date &&
+                          typeof booking.date.toDate === "function"
+                        ) {
+                          return booking.date.toDate().toLocaleDateString();
+                        }
+                        // If booking.date is an object with seconds (Timestamp-like but not exactly Firestore’s)
+                        else if (booking.date && booking.date.seconds) {
+                          return new Date(
                             booking.date.seconds * 1000
-                          ).toLocaleDateString()
-                        : "Invalid Date"}
+                          ).toLocaleDateString();
+                        }
+                        // If booking.date is a string (e.g. "2025-03-03")
+                        else if (typeof booking.date === "string") {
+                          return new Date(booking.date).toLocaleDateString();
+                        }
+                        // If none of the above, show "Invalid Date"
+                        else {
+                          return "Invalid Date";
+                        }
+                      })()}
                     </p>
                     <p>
                       <strong>Status:</strong> {booking.status}

@@ -74,6 +74,10 @@ const DriverDashboard = () => {
         driverEmail: auth.currentUser.email,
         status: "available",
       });
+      await addDoc(collection(db, "bookings"), {
+        date: Timestamp.fromDate(new Date(date)),
+        // the rest of your booking data
+      });
       setModalMessage("Trip posted successfully!");
       setIsModalOpen(true);
     } catch (error) {
