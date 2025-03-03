@@ -8,6 +8,7 @@ import {
   getDoc,
   collection,
   addDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { app } from "../firebaseConfig";
 import Navbar from "../components/Navbar";
@@ -68,6 +69,7 @@ const DriverDashboard = () => {
     try {
       await addDoc(collection(db, "rides"), {
         ...tripDetails,
+        date: Timestamp.fromDate(new Date(date)),
         driverId: auth.currentUser.uid,
         driverEmail: auth.currentUser.email,
         status: "available",

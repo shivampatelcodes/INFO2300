@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
@@ -64,15 +64,19 @@ const Navbar = ({ role, setRole }) => {
             >
               Home
             </Link>
-            <Link to="/bookings" className="mr-4 text-blue-500 hover:underline">
-              Bookings
-            </Link>
-            {role === "driver" && (
+            {role === "driver" ? (
               <Link
                 to="/manage-bookings"
                 className="mr-4 text-blue-500 hover:underline"
               >
                 Manage Bookings
+              </Link>
+            ) : (
+              <Link
+                to="/bookings"
+                className="mr-4 text-blue-500 hover:underline"
+              >
+                Bookings
               </Link>
             )}
             <button
@@ -123,20 +127,21 @@ const Navbar = ({ role, setRole }) => {
                   >
                     Home
                   </Link>
-                  <Link
-                    to="/bookings"
-                    className="block px-4 py-2 text-blue-500 hover:underline"
-                    onClick={toggleDrawer}
-                  >
-                    Bookings
-                  </Link>
-                  {role === "driver" && (
+                  {role === "driver" ? (
                     <Link
                       to="/manage-bookings"
                       className="block px-4 py-2 text-blue-500 hover:underline"
                       onClick={toggleDrawer}
                     >
                       Manage Bookings
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/bookings"
+                      className="block px-4 py-2 text-blue-500 hover:underline"
+                      onClick={toggleDrawer}
+                    >
+                      Bookings
                     </Link>
                   )}
                   <button
