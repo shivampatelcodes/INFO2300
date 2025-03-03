@@ -10,6 +10,7 @@ import {
   addDoc,
   getDoc,
   doc,
+  Timestamp,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { app } from "../firebaseConfig";
@@ -37,7 +38,7 @@ const SearchResults = () => {
         collection(db, "rides"),
         where("origin", "==", origin),
         where("destination", "==", destination),
-        where("date", "==", date)
+        where("date", "==", Timestamp.fromDate(new Date(date)))
       );
       const querySnapshot = await getDocs(q);
       const ridesData = querySnapshot.docs.map((doc) => ({
@@ -116,7 +117,8 @@ const SearchResults = () => {
                       <strong>Destination:</strong> {ride.destination}
                     </p>
                     <p>
-                      <strong>Date:</strong> {ride.date}
+                      <strong>Date:</strong>{" "}
+                      {new Date(ride.date.seconds * 1000).toLocaleDateString()}
                     </p>
                     <p>
                       <strong>Driver Name:</strong> {ride.driverName}
