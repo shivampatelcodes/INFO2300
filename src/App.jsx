@@ -11,7 +11,10 @@ import SearchResults from "./pages/SearchResults";
 import DriverDashboard from "./pages/DriverDashboard";
 import BookingPage from "./pages/BookingPage";
 import ManageBookingsPage from "./pages/ManageBookingsPage";
+import Settings from "./pages/Settings";
 import PrivateRoute from "./components/PrivateRoute";
+import ProfileCompleteRoute from "./components/ProfileCompleteRoute";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -19,14 +22,29 @@ const App = () => {
       <Routes>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
+
         <Route
           path="/dashboard"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <ProfileCompleteRoute>
+                <Dashboard />
+              </ProfileCompleteRoute>
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/driver-dashboard"
+          element={
+            <PrivateRoute>
+              <ProfileCompleteRoute>
+                <DriverDashboard />
+              </ProfileCompleteRoute>
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/search-results"
           element={
@@ -35,14 +53,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/driver-dashboard"
-          element={
-            <PrivateRoute>
-              <DriverDashboard />
-            </PrivateRoute>
-          }
-        />
+
         <Route
           path="/bookings"
           element={
@@ -51,6 +62,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/manage-bookings"
           element={
@@ -59,6 +71,26 @@ const App = () => {
             </PrivateRoute>
           }
         />
+
+        {/* Route for profile settings */}
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <Settings />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+
         <Route path="/" element={<Navigate to="/signin" replace />} />
       </Routes>
     </Router>

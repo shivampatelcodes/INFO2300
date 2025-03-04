@@ -166,25 +166,18 @@ const ManageBookingsPage = () => {
                     <p>
                       <strong>Date:</strong>{" "}
                       {(() => {
-                        // If booking.date is a Firestore Timestamp with a toDate() method
                         if (
                           booking.date &&
                           typeof booking.date.toDate === "function"
                         ) {
                           return booking.date.toDate().toLocaleDateString();
-                        }
-                        // If booking.date is an object with seconds (Timestamp-like but not exactly Firestore’s)
-                        else if (booking.date && booking.date.seconds) {
+                        } else if (booking.date && booking.date.seconds) {
                           return new Date(
                             booking.date.seconds * 1000
                           ).toLocaleDateString();
-                        }
-                        // If booking.date is a string (e.g. "2025-03-03")
-                        else if (typeof booking.date === "string") {
+                        } else if (typeof booking.date === "string") {
                           return new Date(booking.date).toLocaleDateString();
-                        }
-                        // If none of the above, show "Invalid Date"
-                        else {
+                        } else {
                           return "Invalid Date";
                         }
                       })()}

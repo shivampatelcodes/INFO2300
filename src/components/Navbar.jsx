@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
@@ -20,11 +21,6 @@ const Navbar = ({ role, setRole }) => {
       setRole(newRole);
       navigate(newRole === "driver" ? "/driver-dashboard" : "/dashboard");
     }
-  };
-
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/signin");
   };
 
   const toggleDrawer = () => {
@@ -54,8 +50,8 @@ const Navbar = ({ role, setRole }) => {
               ></path>
             </svg>
           </button>
-          <span className="text-3xl font-bold text-gray-900 ml-4 lg:ml-0">
-            EasyRide
+          <span className="text-3xl font-bold text-gray-900 ml-4 lg:ml-0 cursor-pointer">
+            <Link to="/dashboard">EasyRide</Link>
           </span>
           <nav className="hidden lg:flex items-center ml-8">
             <Link
@@ -79,6 +75,9 @@ const Navbar = ({ role, setRole }) => {
                 Bookings
               </Link>
             )}
+            <Link to="/settings" className="mr-4 text-blue-500 hover:underline">
+              Settings
+            </Link>
             <button
               onClick={toggleRole}
               className="ml-4 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -87,12 +86,7 @@ const Navbar = ({ role, setRole }) => {
             </button>
           </nav>
         </div>
-        <button
-          onClick={handleLogout}
-          className="ml-4 px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-        >
-          Logout
-        </button>
+        {/* Logout button removed from main navbar */}
       </div>
       {isDrawerOpen && (
         <div className="lg:hidden">
@@ -144,6 +138,13 @@ const Navbar = ({ role, setRole }) => {
                       Bookings
                     </Link>
                   )}
+                  <Link
+                    to="/settings"
+                    className="block px-4 py-2 text-blue-500 hover:underline"
+                    onClick={toggleDrawer}
+                  >
+                    Settings
+                  </Link>
                   <button
                     onClick={() => {
                       toggleRole();
