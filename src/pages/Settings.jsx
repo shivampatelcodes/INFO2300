@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import Navbar from "../components/Navbar";
@@ -16,6 +16,7 @@ const Settings = () => {
   });
   const [role, setRole] = useState("");
   const [activeTab, setActiveTab] = useState("general"); // "profile", "account", "privacy", etc.
+  const [showMobileOptions, setShowMobileOptions] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const Settings = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  // Render the content based on activeTab
+  // Render settings content based on activeTab
   const renderContent = () => {
     switch (activeTab) {
       case "profile":
@@ -163,69 +164,146 @@ const Settings = () => {
           <div>
             <h2 className="text-2xl font-bold mb-4">General Settings</h2>
             <p>
-              Select an option from the sidebar to view or edit your settings.
+              Select an option from the settings list to view or edit your
+              settings.
             </p>
           </div>
         );
     }
   };
 
+  // Mobile options overlay: a vertical list of settings options.
+  const mobileOptionsOverlay = (
+    <div className="fixed inset-0 z-50 flex flex-col bg-white p-6 overflow-y-auto">
+      <h2 className="text-2xl font-bold mb-4">Settings Options</h2>
+      <ul className="space-y-4">
+        <li>
+          <button
+            onClick={() => {
+              setActiveTab("general");
+              setShowMobileOptions(false);
+            }}
+            className="w-full text-left px-4 py-2 text-blue-500 hover:underline focus:outline-none"
+          >
+            General Settings
+          </button>
+        </li>
+        <li>
+          <button
+            onClick={() => {
+              setActiveTab("profile");
+              setShowMobileOptions(false);
+            }}
+            className="w-full text-left px-4 py-2 text-blue-500 hover:underline focus:outline-none"
+          >
+            Profile
+          </button>
+        </li>
+        <li>
+          <button
+            onClick={() => {
+              setActiveTab("account");
+              setShowMobileOptions(false);
+            }}
+            className="w-full text-left px-4 py-2 text-blue-500 hover:underline focus:outline-none"
+          >
+            Account Settings
+          </button>
+        </li>
+        <li>
+          <button
+            onClick={() => {
+              setActiveTab("privacy");
+              setShowMobileOptions(false);
+            }}
+            className="w-full text-left px-4 py-2 text-blue-500 hover:underline focus:outline-none"
+          >
+            Privacy
+          </button>
+        </li>
+      </ul>
+      <button
+        onClick={() => setShowMobileOptions(false)}
+        className="mt-6 w-full px-4 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+      >
+        Close
+      </button>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar role={role} setRole={setRole} />
-      <div className="max-w-7xl mx-auto px-4 py-6 lg:flex lg:space-x-6">
-        {/* Sidebar */}
-        <aside className="lg:w-1/4 mb-6 lg:mb-0">
-          <div className="bg-white shadow rounded-md p-6">
-            <h2 className="text-xl font-bold mb-4">Settings</h2>
-            <ul className="space-y-3">
-              <li>
+      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+        {/* On small screens, show a button that opens the settings options list */}
+        <div className="lg:hidden">
+          <button
+            onClick={() => setShowMobileOptions(true)}
+            className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Show Settings Options
+          </button>
+        </div>
+        {/* Sidebar for larger screens */}
+        <div className="hidden lg:flex lg:space-x-6">
+          <aside className="lg:w-1/4">
+            <div className="bg-white shadow rounded-md p-6">
+              <h2 className="text-xl font-bold mb-4">Settings</h2>
+              <ul className="space-y-3">
+                <li>
+                  <button
+                    onClick={() => setActiveTab("profile")}
+                    className={`w-full text-left text-blue-500 hover:underline focus:outline-none ${
+                      activeTab === "profile" ? "font-bold" : ""
+                    }`}
+                  >
+                    Profile
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab("account")}
+                    className={`w-full text-left text-blue-500 hover:underline focus:outline-none ${
+                      activeTab === "account" ? "font-bold" : ""
+                    }`}
+                  >
+                    Account Settings
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab("privacy")}
+                    className={`w-full text-left text-blue-500 hover:underline focus:outline-none ${
+                      activeTab === "privacy" ? "font-bold" : ""
+                    }`}
+                  >
+                    Privacy
+                  </button>
+                </li>
+              </ul>
+              <div className="mt-6">
                 <button
-                  onClick={() => setActiveTab("profile")}
-                  className={`text-left w-full text-blue-500 hover:underline block ${
-                    activeTab === "profile" ? "font-bold" : ""
-                  }`}
+                  onClick={handleLogout}
+                  className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  Profile
+                  Logout
                 </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab("account")}
-                  className={`text-left w-full text-blue-500 hover:underline block ${
-                    activeTab === "account" ? "font-bold" : ""
-                  }`}
-                >
-                  Account Settings
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab("privacy")}
-                  className={`text-left w-full text-blue-500 hover:underline block ${
-                    activeTab === "privacy" ? "font-bold" : ""
-                  }`}
-                >
-                  Privacy
-                </button>
-              </li>
-              {/* Add more links as needed */}
-            </ul>
-            <div className="mt-6">
-              <button
-                onClick={handleLogout}
-                className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                Logout
-              </button>
+              </div>
             </div>
-          </div>
-        </aside>
-        {/* Main Content */}
-        <section className="lg:w-3/4 bg-white shadow rounded-md p-6">
-          {renderContent()}
-        </section>
+          </aside>
+          {/* Main Content for larger screens */}
+          <section className="lg:w-3/4 bg-white shadow rounded-md p-6">
+            {renderContent()}
+          </section>
+        </div>
+        {/* For small screens, display the selected content */}
+        <div className="lg:hidden">
+          <section className="bg-white shadow rounded-md p-6">
+            {renderContent()}
+          </section>
+        </div>
       </div>
+      {showMobileOptions && mobileOptionsOverlay}
     </div>
   );
 };
