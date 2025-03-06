@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -12,9 +13,15 @@ import DriverDashboard from "./pages/DriverDashboard";
 import BookingPage from "./pages/BookingPage";
 import ManageBookingsPage from "./pages/ManageBookingsPage";
 import Settings from "./pages/Settings";
-import PrivateRoute from "./components/PrivateRoute";
 import ProfileCompleteRoute from "./components/ProfileCompleteRoute";
 import Profile from "./pages/Profile";
+import { AuthContext } from "./main.jsx";
+
+const DefaultRoute = () => {
+  const user = useContext(AuthContext);
+  // If user exists, redirect to dashboard; otherwise to sign in.
+  return <Navigate to={user ? "/dashboard" : "/signin"} replace />;
+};
 
 const App = () => {
   return (
@@ -26,72 +33,25 @@ const App = () => {
         <Route
           path="/dashboard"
           element={
-            <PrivateRoute>
-              <ProfileCompleteRoute>
-                <Dashboard />
-              </ProfileCompleteRoute>
-            </PrivateRoute>
+            <ProfileCompleteRoute>
+              <Dashboard />
+            </ProfileCompleteRoute>
           }
         />
-
         <Route
           path="/driver-dashboard"
           element={
-            <PrivateRoute>
-              <ProfileCompleteRoute>
-                <DriverDashboard />
-              </ProfileCompleteRoute>
-            </PrivateRoute>
+            <ProfileCompleteRoute>
+              <DriverDashboard />
+            </ProfileCompleteRoute>
           }
         />
-
-        <Route
-          path="/search-results"
-          element={
-            <PrivateRoute>
-              <SearchResults />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/bookings"
-          element={
-            <PrivateRoute>
-              <BookingPage />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/manage-bookings"
-          element={
-            <PrivateRoute>
-              <ManageBookingsPage />
-            </PrivateRoute>
-          }
-        />
-
-        {/* Route for profile settings */}
-        <Route
-          path="/settings"
-          element={
-            <PrivateRoute>
-              <Settings />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-
-        <Route path="/" element={<Navigate to="/signin" replace />} />
+        <Route path="/search-results" element={<SearchResults />} />
+        <Route path="/bookings" element={<BookingPage />} />
+        <Route path="/manage-bookings" element={<ManageBookingsPage />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={<DefaultRoute />} />
       </Routes>
     </Router>
   );
