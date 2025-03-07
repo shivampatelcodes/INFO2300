@@ -62,7 +62,8 @@ const Settings = () => {
           phone: details.phone,
           address: details.address,
         });
-        alert("Profile updated successfully!");
+        // After saving, navigate to the dashboard so ProfileCompleteRoute doesn't keep you on settings
+        navigate("/dashboard");
       } catch (error) {
         console.error("Error updating profile:", error);
       }
