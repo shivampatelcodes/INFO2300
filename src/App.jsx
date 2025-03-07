@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useContext } from "react";
 import {
   BrowserRouter as Router,
@@ -15,13 +16,13 @@ import ManageBookingsPage from "./pages/ManageBookingsPage";
 import Settings from "./pages/Settings";
 import ProfileCompleteRoute from "./components/ProfileCompleteRoute";
 import Profile from "./pages/Profile";
-import { AuthContext } from "./main.jsx";
+// import { AuthContext } from "./main.jsx";
 
-const DefaultRoute = () => {
-  const user = useContext(AuthContext);
-  // If user exists, redirect to dashboard; otherwise to sign in.
-  return <Navigate to={user ? "/dashboard" : "/signin"} replace />;
-};
+// const DefaultRoute = () => {
+//   const user = useContext(AuthContext);
+// If user exists, redirect to dashboard; otherwise to sign in.
+//   return <Navigate to={user ? "/dashboard" : "/signin"} replace />;
+// };
 
 const App = () => {
   return (
@@ -51,7 +52,8 @@ const App = () => {
         <Route path="/manage-bookings" element={<ManageBookingsPage />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/" element={<DefaultRoute />} />
+        {/* Redirect the default route to /dashboard so that ProfileCompleteRoute applies */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>
   );

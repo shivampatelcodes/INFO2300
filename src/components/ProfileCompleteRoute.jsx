@@ -12,10 +12,10 @@ const ProfileCompleteRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [profileComplete, setProfileComplete] = useState(false);
   const location = useLocation();
+  const user = auth.currentUser;
 
   useEffect(() => {
     const checkProfile = async () => {
-      const user = auth.currentUser;
       if (user) {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
@@ -28,14 +28,17 @@ const ProfileCompleteRoute = ({ children }) => {
       setLoading(false);
     };
     checkProfile();
-  }, []);
+  }, [user]);
 
   if (loading) return <div>Loading...</div>;
 
-  // If already on settings page, render the settings to avoid redirect loop
-  if (location.pathname === "/settings") return children;
+  // Redirect to sign in if no user is detected.
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
 
-  if (!profileComplete) {
+  // If the profile isn't complete and we're not already on the settings page, redirect there.
+  if (!profileComplete && location.pathname !== "/settings") {
     return <Navigate to="/settings" replace />;
   }
 
