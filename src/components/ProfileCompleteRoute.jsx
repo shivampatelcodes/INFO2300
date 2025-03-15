@@ -19,7 +19,13 @@ const ProfileCompleteRoute = ({ children }) => {
       const unsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setProfileComplete(!!(data.fullName && data.phone && data.address));
+          console.log("User Data:", data);
+          // Use a case-insensitive check for role
+          if (data.role && data.role.toLowerCase() === "passenger") {
+            setProfileComplete(true);
+          } else {
+            setProfileComplete(!!(data.fullName && data.phone && data.address));
+          }
         } else {
           setProfileComplete(false);
         }

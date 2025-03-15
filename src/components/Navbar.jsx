@@ -159,10 +159,10 @@ const Navbar = ({ role, setRole }) => {
                   {/* Settings link removed from mobile drawer if desired.
                       If you want to include it here, you can add an extra item. */}
                   <button
-                    onClick={() => {
-                      navigate("/settings");
-                      toggleDrawer();
-                    }}
+                    // onClick={() => {
+                    //   navigate("/settings");
+                    //   toggleDrawer();
+                    // }}
                     className="block w-full text-left px-4 py-2 text-gray-500 hover:underline"
                   >
                     Settings
