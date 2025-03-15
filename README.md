@@ -92,4 +92,3 @@ The MIT License was chosen because it’s simple, widely recognized, and allows 
 
 ---
 
-Happy coding!
